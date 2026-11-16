@@ -254,19 +254,33 @@ function repsChart(q,reps){
   const bandB=H(q.hi),bandH=Math.max(10,H(q.lo)-H(q.hi));
   const col=s=>s<=q.hi+3?"var(--lime)":s<=q.stop?"var(--warn)":"var(--bad)";
   return `<div class="reps"><div class="band" style="bottom:${bandB.toFixed(0)}px;height:${bandH.toFixed(0)}px"></div>${reps.map(s=>`<i style="height:${H(s).toFixed(0)}px;background:${col(s)}"></i>`).join("")}</div><div class="replab">${reps.map(s=>`<span>${fmtPace(s)}</span>`).join("")}</div><div class="note" style="margin-top:6px">Zone pointillée = allure cible ${fmtPace(q.lo)}-${fmtPace(q.hi)}</div>`}
+/* illustrations : silhouettes filaires en SVG, sans image à télécharger */
+const pl=p=>`<polyline points="${p}"/>`,hd=(x,y,r=5)=>`<circle class="hd" cx="${x}" cy="${y}" r="${r}"/>`;
+const hl=(x,y,rx,ry)=>`<ellipse class="hl" cx="${x}" cy="${y}" rx="${rx}" ry="${ry}"/>`;
+const arr=(p,h)=>`<polyline class="ar" points="${p}"/><polyline class="ar" points="${h}"/>`;
+const pose=(inner,top)=>`<svg class="pose" viewBox="0 0 120 80" aria-hidden="true">${top?"":'<line class="gr" x1="4" y1="72" x2="116" y2="72"/>'}<g class="bd">${inner}</g></svg>`;
+const POSES={
+ ankle:pose(`<line class="wall" x1="108" y1="4" x2="108" y2="72"/>${hl(74,64,10,7)}${pl("64,70 88,70")}${pl("72,68 97,48")}${pl("97,48 80,32")}${pl("80,32 86,13")}${hd(88,7)}${pl("80,32 64,54 44,70")}${pl("86,15 106,17")}${arr("72,56 88,56","84,52 88,56 84,60")}`),
+ flexor:pose(`${hl(56,57,9,8)}${pl("78,70 98,70")}${pl("88,68 84,50")}${pl("84,50 62,46")}${pl("62,46 50,68 26,70")}${pl("62,46 60,21")}${hd(60,13)}${pl("60,23 70,35 70,47")}${arr("44,50 56,50","52,46 56,50 52,54")}`),
+ nn:pose(`${hl(60,46,9,9)}${pl("32,72 32,46 88,46 88,24")}${pl("60,22 60,46")}${pl("46,22 74,22")}${hd(60,12,6)}${arr("42,60 78,60","46,56 42,60 46,64")}${pl("74,56 78,60 74,64")}`,true),
+ squat:pose(`${hl(44,58,9,8)}${pl("52,70 76,70")}${pl("62,67 74,44")}${pl("74,44 46,56")}${pl("46,56 54,28")}${hd(57,20)}${pl("54,30 71,43 62,34")}${arr("40,36 40,50","36,46 40,50 44,46")}`),
+ fig4:pose(`${hl(54,63,9,7)}${pl("20,67 50,67")}${hd(12,65)}${pl("50,67 74,38 88,68")}${pl("50,67 92,52 76,40")}${pl("22,66 44,56 66,52")}${arr("40,48 56,48","52,44 56,48 52,52")}`),
+ wgs:pose(`${hl(60,56,11,8)}${pl("82,70 100,70")}${pl("56,50 88,50 90,68")}${pl("56,50 10,68")}${pl("56,50 72,32")}${hd(78,27)}${pl("72,34 74,68")}${pl("72,34 66,6")}${arr("84,24 88,12","84,15 88,12 91,16")}`),
+ cars:pose(`${hl(40,40,8,8)}${pl("80,40 80,68")}${pl("80,40 40,40")}${hd(89,36)}${pl("40,40 40,66 20,68")}${pl("40,40 24,38 14,52")}<circle class="ar" cx="24" cy="38" r="12" stroke-dasharray="4 4"/>`)
+};
 const ROUTINE=[
- {t:"1'",n:"Chevilles",d:"Genou vers le mur, talon au sol · 10 par côté"},
- {t:"1'30",n:"Fléchisseurs de hanche",d:"Demi-chevalier, fessier serré, bassin glissé sous soi · 45 s par côté"},
- {t:"1'30",n:"90/90",d:"Bascule lente d'un côté à l'autre, dos long · 8 allers-retours"},
- {t:"1'30",n:"Squat profond",d:"Talons au sol, coudes qui poussent les genoux, respire · 3 × 30 s"},
- {t:"1'30",n:"Figure 4",d:"Sur le dos, cheville sur le genou opposé, tire vers toi · 45 s par côté"},
- {t:"1'30",n:"World's greatest stretch",d:"Fente basse, rotation du buste vers le genou avant (bras au sol si gênant) · 4 par côté"},
- {t:"1'",n:"Rotations de hanche",d:"À quatre pattes, cercles du genou aussi grands que possible · 3 par côté"}
+ {t:"1'",n:"Chevilles",p:"ankle",d:"Genou vers le mur, talon au sol · 10 par côté"},
+ {t:"1'30",n:"Fléchisseurs de hanche",p:"flexor",d:"Demi-chevalier, fessier serré, bassin glissé sous soi · 45 s par côté"},
+ {t:"1'30",n:"90/90",p:"nn",d:"Bascule lente d'un côté à l'autre, dos long · 8 allers-retours"},
+ {t:"1'30",n:"Squat profond",p:"squat",d:"Talons au sol, coudes qui poussent les genoux, respire · 3 × 30 s"},
+ {t:"1'30",n:"Figure 4",p:"fig4",d:"Sur le dos, cheville sur le genou opposé, tire vers toi · 45 s par côté"},
+ {t:"1'30",n:"World's greatest stretch",p:"wgs",d:"Fente basse, rotation du buste vers le genou avant (bras au sol si gênant) · 4 par côté"},
+ {t:"1'",n:"Rotations de hanche",p:"cars",d:"À quatre pattes, cercles du genou aussi grands que possible · 3 par côté"}
 ];
 function mobCard(){
   const done=!!S.mob[selDate],n=weekBounds(selDate).filter(d=>S.mob[d]).length;
   return `<div class="card"><div class="row between"><span class="lab">Mobilité · 10 min · chaque jour</span><span class="note">${n}/7 cette semaine</span></div>
-  <details class="mob"><summary><b style="font-family:Sora;font-size:18px">Routine hanches + chevilles</b><span class="note">Touche pour dérouler les 7 exercices</span></summary><ol>${ROUTINE.map(r=>`<li><span class="k">${esc(r.t)}</span><div><b>${esc(r.n)}</b><div class="note">${esc(r.d)}</div></div></li>`).join("")}</ol><p class="note" style="margin:10px 0 0">Étire jusqu'à 5-6/10 de tension, jamais de douleur. Respire lentement. Les jours de qualité : à faire après la séance, pas avant.</p></details>
+  <details class="mob"><summary><b style="font-family:Sora;font-size:18px">Routine hanches + chevilles</b><span class="note">Touche pour dérouler les 7 exercices</span></summary><ol>${ROUTINE.map(r=>`<li>${POSES[r.p]||""}<div><div class="row" style="gap:8px;flex-wrap:nowrap"><b>${esc(r.n)}</b><span class="k">${esc(r.t)}</span></div><div class="note">${esc(r.d)}</div></div></li>`).join("")}</ol><p class="note" style="margin:10px 0 0">Étire jusqu'à 5-6/10 de tension, jamais de douleur. Respire lentement. Les jours de qualité : à faire après la séance, pas avant.</p></details>
   <button class="btn ${done?"sec":""}" id="mobDone" style="margin-top:10px">${done?"Faite aujourd'hui ✓":"Marquer comme faite"}</button></div>`}
 
 function viewToday(){
