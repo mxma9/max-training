@@ -118,8 +118,11 @@ function bilan(date){
 
 /* ---------- Intervals.icu (appels directs depuis le téléphone) ---------- */
 const BASE="https://intervals.icu/api/v1",KEYK="max-ivl-key";
-const getKey=()=>{try{return localStorage.getItem(KEYK)||""}catch(e){return ""}};
-const setKey=k=>{try{k?localStorage.setItem(KEYK,k):localStorage.removeItem(KEYK)}catch(e){}};
+const ckGet=()=>{const m=document.cookie.match(/(?:^|; )mxk=([^;]*)/);return m?decodeURIComponent(m[1]):""};
+const getKey=()=>{let k="";try{k=localStorage.getItem(KEYK)||""}catch(e){}return k||ckGet()};
+const setKey=k=>{try{k?localStorage.setItem(KEYK,k):localStorage.removeItem(KEYK)}catch(e){}
+ try{document.cookie="mxk="+(k?encodeURIComponent(k):"")+"; max-age="+(k?31536000:0)+"; path=/; SameSite=Strict; Secure"}catch(e){}
+ try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}};
 async function api(path,opt={}){
   const h={"Authorization":"Basic "+btoa("API_KEY:"+getKey())};
   if(opt.body)h["Content-Type"]="application/json";
