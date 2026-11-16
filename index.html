@@ -3,63 +3,92 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Max Training</title>
 <meta name="robots" content="noindex">
-<title>Test Intervals</title>
+<meta name="theme-color" content="#0a0a0a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Max">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
 <style>
-:root{--bg:#0a0a0a;--fg:#f2f2f2;--mute:#9a9a9a;--lime:#c6f432;--card:#161616;--line:#2a2a2a;--ok:#7ddf64;--bad:#ff6b5e}
+body{margin:0;padding-top:max(12px,env(safe-area-inset-top,0px))}
+
+:root{--bg:#0a0a0a;--card:#161616;--card2:#1f1f1f;--line:#2a2a2a;--fg:#f4f4f0;--mute:#8d8d86;--lime:#c6f432;--limeink:#0a0a0a;--ok:#c6f432;--warn:#ffb020;--bad:#ff5a4d;color-scheme:dark}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f4f4ee;--card:#fff;--card2:#ecece4;--line:#dcdcd2;--fg:#111;--mute:#6b6b63;--lime:#a4d600;--limeink:#0a0a0a;--ok:#5f8f00;--warn:#c27a00;--bad:#d03a2e;color-scheme:light}}
+:root[data-theme="light"]{--bg:#f4f4ee;--card:#fff;--card2:#ecece4;--line:#dcdcd2;--fg:#111;--mute:#6b6b63;--lime:#a4d600;--limeink:#0a0a0a;--ok:#5f8f00;--warn:#c27a00;--bad:#d03a2e;color-scheme:light}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.45 -apple-system,system-ui,sans-serif;padding:max(16px,env(safe-area-inset-top)) 16px 40px}
-main{max-width:560px;margin:0 auto}
-h1{font-size:28px;margin:8px 0 4px}
-p{color:var(--mute);margin:6px 0 14px}
-label{display:block;font-size:13px;color:var(--mute);margin:12px 0 4px}
-input{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);font-size:16px}
-button{width:100%;margin-top:12px;padding:14px;border:0;border-radius:12px;background:var(--lime);color:#0a0a0a;font-weight:700;font-size:16px}
-button.sec{background:var(--card);color:var(--fg);border:1px solid var(--line)}
-pre{white-space:pre-wrap;word-break:break-word;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;font-size:13px;margin-top:14px;min-height:60px}
-.ok{color:var(--ok)}.bad{color:var(--bad)}
+body{background:var(--bg);color:var(--fg);font:15px/1.45 Inter,system-ui,sans-serif;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px));padding-block:12px 110px}
+.wrap{max-width:560px;margin:0 auto}
+h1,h2,h3{margin:0;font-family:'Barlow Condensed',Inter,sans-serif;font-weight:600;letter-spacing:.01em;text-wrap:balance}
+.num{font-family:'Barlow Condensed',Inter,sans-serif;font-weight:600;font-variant-numeric:tabular-nums}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:8px}
+.top .hi{color:var(--mute);font-size:13px;text-transform:uppercase;letter-spacing:.12em}
+.top h1{font-size:34px;line-height:1}
+.pill{border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:999px;padding:7px 12px;font:500 13px Inter;cursor:pointer}
+.card{background:var(--card);border-radius:22px;padding:16px;margin-bottom:12px;min-width:0}
+.card.lime{background:var(--lime);color:var(--limeink)}
+.lab{font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--mute)}
+.lime .lab{color:#2b3a00}
+.big{font-size:64px;line-height:.95}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.between{justify-content:space-between}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:12px}
+.day{background:var(--card);border-radius:16px;padding:8px 0;text-align:center;border:1px solid transparent;cursor:pointer;color:var(--fg);font:inherit;min-width:0}
+.day small{display:block;color:var(--mute);font-size:10px;text-transform:uppercase;letter-spacing:.08em}
+.day b{font:600 20px 'Barlow Condensed'}
+.day i{display:block;width:6px;height:6px;border-radius:50%;margin:3px auto 0;background:transparent}
+.day i.on{background:var(--lime)}
+.day.sel{background:var(--lime);color:var(--limeink)}.day.sel small{color:#2b3a00}
+.day.today{border-color:var(--lime)}
+.chip{display:inline-block;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600;background:var(--card2);color:var(--fg)}
+.chip.lime{background:var(--lime);color:var(--limeink)}
+.chip.warn{background:var(--warn);color:#0a0a0a}
+.light{width:14px;height:14px;border-radius:50%;display:inline-block;vertical-align:middle}
+.g{background:var(--ok)}.o{background:var(--warn)}.r{background:var(--bad)}
+ul.ex{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px}
+ul.ex li{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--card2);border-radius:14px}
+.lime ul.ex li{background:rgba(0,0,0,.10)}
+ul.ex li span.k{font:600 15px 'Barlow Condensed';min-width:22px;color:var(--mute)}
+label{display:block;font-size:12px;color:var(--mute);margin:12px 0 6px}
+input,select,textarea{width:100%;background:var(--card2);color:var(--fg);border:1px solid var(--line);border-radius:12px;padding:11px 12px;font:inherit}
+input[type=range]{padding:0;accent-color:var(--lime)}
+textarea{min-height:70px;resize:vertical}
+.btn{background:var(--lime);color:var(--limeink);border:0;border-radius:999px;padding:13px 18px;font:600 15px Inter;cursor:pointer;width:100%}
+.btn.sec{background:var(--card2);color:var(--fg)}
+.btn:disabled{opacity:.5}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{flex:1;min-width:44px;background:var(--card2);color:var(--fg);border:1px solid var(--line);border-radius:12px;padding:10px 0;font:600 15px Inter;cursor:pointer}
+.seg button.on{background:var(--lime);color:var(--limeink);border-color:var(--lime)}
+.bar{height:8px;background:var(--card2);border-radius:99px;overflow:hidden}.bar>div{height:100%;background:var(--lime)}
+nav{position:fixed;left:0;right:0;bottom:0;padding:8px max(12px,env(safe-area-inset-left,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-right,0px));display:flex;justify-content:center;pointer-events:none}
+nav .in{pointer-events:auto;display:flex;gap:2px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px;width:100%;max-width:560px}
+nav button{flex:1;background:transparent;border:0;color:var(--mute);padding:10px 0;border-radius:999px;font:500 12px Inter;cursor:pointer;min-width:0}
+nav button.on{background:var(--lime);color:var(--limeink);font-weight:600}
+.note{font-size:12.5px;color:var(--mute)}
+.warn{color:var(--warn)}
+.okc{color:var(--ok)}
+table{width:100%;border-collapse:collapse;font-size:13px}td,th{padding:7px 4px;border-bottom:1px solid var(--line);text-align:left}
+.scroll{overflow-x:auto}
+svg text{fill:var(--mute);font:10px Inter}
+.ph{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}.ph:last-child{border:0}
+.ph b{font-family:'Barlow Condensed';font-size:18px}
+.dayrow{cursor:pointer}
+.done{color:var(--ok);font-size:13px;margin-top:3px}
+.nav2{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-bottom:12px}
+hr{border:0;border-top:1px solid var(--line);margin:12px 0}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(90px + env(safe-area-inset-bottom));background:var(--lime);color:var(--limeink);padding:10px 16px;border-radius:999px;font:600 14px Inter;z-index:50}
+button{-webkit-tap-highlight-color:transparent}
+html{background:var(--bg)}
 </style>
 </head>
 <body>
-<main>
-<h1>Test Intervals</h1>
-<p>Vérifie que cette page peut lire (et écrire) dans Intervals.icu depuis ton navigateur. La clé n'est ni enregistrée ni envoyée ailleurs que vers intervals.icu.</p>
-<label for="k">Clé API Intervals (Réglages, Developer Settings)</label>
-<input id="k" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="coller la clé ici">
-<button id="r">Test 1 · Lecture (sommeil, FC repos)</button>
-<button id="w" class="sec">Test 2 · Écriture (crée puis supprime une note)</button>
-<pre id="o">En attente.</pre>
-</main>
-<script>
-const $=s=>document.querySelector(s);
-const out=(t,c)=>{$("#o").innerHTML=(c?'<span class="'+c+'">':'')+t.replace(/&/g,"&amp;").replace(/</g,"&lt;")+(c?"</span>":"")};
-const H=()=>({"Authorization":"Basic "+btoa("API_KEY:"+$("#k").value.trim()),"Content-Type":"application/json"});
-const B="https://intervals.icu/api/v1/athlete/0";
-const day=n=>{const d=new Date(Date.now()+n*864e5);return d.toISOString().slice(0,10)};
-async function call(url,opt){const r=await fetch(url,opt);const t=await r.text();return {s:r.status,t}}
-$("#r").onclick=async()=>{
-  if(!$("#k").value.trim())return out("Colle d'abord la clé.","bad");
-  out("Lecture en cours…");
-  try{
-    const r=await call(B+"/wellness?oldest="+day(-3)+"&newest="+day(0),{headers:H()});
-    if(r.s!==200)return out("HTTP "+r.s+"\n"+r.t.slice(0,300),"bad");
-    const j=JSON.parse(r.t);
-    out("LECTURE OK : "+j.length+" jours reçus.\n"+j.map(w=>w.id+" · FC repos "+(w.restingHR??"–")+" · VFC "+(w.hrv??"–")+" · sommeil "+(w.sleepSecs?(w.sleepSecs/3600).toFixed(1)+" h":"–")).join("\n"),"ok");
-  }catch(e){out("ÉCHEC : "+e.message+"\nSi c'est « Load failed » ou « Failed to fetch », le navigateur bloque l'appel (CORS).","bad")}
-};
-$("#w").onclick=async()=>{
-  if(!$("#k").value.trim())return out("Colle d'abord la clé.","bad");
-  out("Écriture en cours…");
-  let id=null;
-  try{
-    const c=await call(B+"/events",{method:"POST",headers:H(),body:JSON.stringify({category:"NOTE",start_date_local:day(60)+"T00:00:00",name:"TEST app (supprimé automatiquement)",type:"Run"})});
-    if(c.s!==200)return out("Création : HTTP "+c.s+"\n"+c.t.slice(0,300),"bad");
-    id=JSON.parse(c.t).id;
-    const d=await call(B+"/events/"+id,{method:"DELETE",headers:H()});
-    if(d.s!==200)return out("Note créée (id "+id+") mais suppression : HTTP "+d.s+". Supprime-la à la main dans Intervals (dans 60 jours).","bad");
-    out("ÉCRITURE OK : note créée (id "+id+") puis supprimée.","ok");
-  }catch(e){out("ÉCHEC : "+e.message+(id?"\nLa note "+id+" existe peut-être : supprime-la dans Intervals.":"")+"\nSi c'est « Load failed », le navigateur bloque l'écriture (CORS).","bad")}
-};
-</script>
+<div class="wrap" id="app"></div>
+<nav><div class="in" id="nav"></div></nav>
+<script src="app.js"></script>
 </body>
 </html>
