@@ -38,7 +38,7 @@ const GOALS="10 km sous 40:00 (3:59/km) ; marathon de Rome le 14 mars 2027 (obje
 const ROME="2027-03-14";
 
 /* ---------- État & stockage ---------- */
-let S={checkins:{},journal:[],profile:{...PROFILE0},over:{},ign:{},ivl:null,base:{},avail:{}};
+let S={checkins:{},journal:[],profile:{...PROFILE0},over:{},ign:{},ivl:null,base:{},avail:{},mob:{}};
 let tab="today",selDate=null,weekAnchor=null,coachPrefill="";
 const LS="max-training-v3";
 const $=s=>document.querySelector(s);
@@ -112,7 +112,7 @@ function bilan(date){
     else if(hr)L.push("FC sous "+FCMAX_EASY+" : allure facile respectée.");
   }
   if(rpe>=(q?9:6)){L.push("RPE "+rpe+"/10 : plus dur que prévu pour cette séance.");up("o")}
-  return {lv,L,km,min,hr,rpe,q:!!q};
+  return {lv,L,km,min,hr,rpe,q:!!q,reps:(q&&x&&x.reps&&x.reps.length)?x.reps:null,qd:q||null};
 }
 
 
@@ -223,9 +223,10 @@ async function applyProposal(p){
 
 /* ---------- Rendu ---------- */
 function setTab(t){tab=t;render();window.scrollTo(0,0)}
+const NAVI={today:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/>',week:'<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>',journal:'<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M9 9h6M9 13h6"/>',prog:'<path d="M3 20h18"/><path d="M6 16l4-5 4 3 5-8"/>',coach:'<path d="M4 5h16v11H9l-5 4z"/>'};
 function renderNav(){
-  const T=[["today","Aujourd'hui"],["week","Semaine"],["journal","Journal"],["prog","Progrès"],["coach","Coach"]];
-  $("#nav").innerHTML=T.map(([k,l])=>`<button class="${tab===k?"on":""}" data-t="${k}">${l}</button>`).join("");
+  const T=[["today","Auj."],["week","Semaine"],["journal","Journal"],["prog","Progrès"],["coach","Coach"]];
+  $("#nav").innerHTML=T.map(([k,l])=>`<button class="${tab===k?"on":""}" data-t="${k}"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${NAVI[k]}</svg>${l}</button>`).join("");
   $("#nav").querySelectorAll("button").forEach(b=>b.onclick=()=>setTab(b.dataset.t));
 }
 function head(sub){return `<div class="top"><div><div class="hi">${esc(sub)}</div><h1>Max</h1></div><div class="row" style="gap:6px;flex-wrap:nowrap">${getKey()?`<button class="pill" id="syncBtn" aria-label="Actualiser">${syncing?"…":"↻"}</button>`:""}<button class="pill" id="themeBtn">Thème</button></div></div>${syncMsg?`<div class="note warn" style="margin:-6px 0 10px">${esc(syncMsg)}</div>`:""}`}
@@ -241,21 +242,50 @@ function actLine(a){
   return bits.join(" · ");
 }
 
+
+/* ---------- composants visuels ---------- */
+function dotsFor(d){const p=planFor(d);if(!p)return "";const t=(p.t+" "+(p.d1||[]).join(" ")).toLowerCase();const o=[];
+  if(/footing|course|vo2|seuil|sortie longue|test 5/.test(t))o.push("run");if(/natation/.test(t))o.push("swim");if(/push|pull|legs|salle|squat/.test(t))o.push("gym");if(/mobilité/.test(t))o.push("mob");
+  return o.map(k=>`<span class="dot ${k}"></span>`).join("")}
+function ring(val,pct,color,label){const C=263.9,d=Math.round(Math.max(0,Math.min(1,pct))*C);
+  return `<div class="ring"><div class="rg"><svg aria-hidden="true" width="74" height="74" viewBox="0 0 100 100" style="transform:rotate(-90deg)"><circle cx="50" cy="50" r="42" fill="none" stroke-width="10" style="stroke:var(--line)"/><circle cx="50" cy="50" r="42" fill="none" stroke-width="10" stroke-linecap="round" stroke-dasharray="${d} ${C}" style="stroke:${color}"/></svg><b>${val}</b></div><small>${label}</small></div>`}
+function repsChart(q,reps){
+  const top=q.lo-6,bot=q.stop+12,H=s=>Math.max(14,Math.min(76,14+(bot-s)/(bot-top)*62));
+  const bandB=H(q.hi),bandH=Math.max(10,H(q.lo)-H(q.hi));
+  const col=s=>s<=q.hi+3?"var(--lime)":s<=q.stop?"var(--warn)":"var(--bad)";
+  return `<div class="reps"><div class="band" style="bottom:${bandB.toFixed(0)}px;height:${bandH.toFixed(0)}px"></div>${reps.map(s=>`<i style="height:${H(s).toFixed(0)}px;background:${col(s)}"></i>`).join("")}</div><div class="replab">${reps.map(s=>`<span>${fmtPace(s)}</span>`).join("")}</div><div class="note" style="margin-top:6px">Zone pointillée = allure cible ${fmtPace(q.lo)}-${fmtPace(q.hi)}</div>`}
+const ROUTINE=[
+ {t:"1'",n:"Chevilles",d:"Genou vers le mur, talon au sol · 10 par côté"},
+ {t:"1'30",n:"Fléchisseurs de hanche",d:"Demi-chevalier, fessier serré, bassin glissé sous soi · 45 s par côté"},
+ {t:"1'30",n:"90/90",d:"Bascule lente d'un côté à l'autre, dos long · 8 allers-retours"},
+ {t:"1'30",n:"Squat profond",d:"Talons au sol, coudes qui poussent les genoux, respire · 3 × 30 s"},
+ {t:"1'30",n:"Figure 4",d:"Sur le dos, cheville sur le genou opposé, tire vers toi · 45 s par côté"},
+ {t:"1'30",n:"World's greatest stretch",d:"Fente basse, rotation du buste vers le genou avant (bras au sol si gênant) · 4 par côté"},
+ {t:"1'",n:"Rotations de hanche",d:"À quatre pattes, cercles du genou aussi grands que possible · 3 par côté"}
+];
+function mobCard(){
+  const done=!!S.mob[selDate],n=weekBounds(selDate).filter(d=>S.mob[d]).length;
+  return `<div class="card"><div class="row between"><span class="lab">Mobilité · 10 min · chaque jour</span><span class="note">${n}/7 cette semaine</span></div>
+  <details class="mob"><summary><b style="font-family:Sora;font-size:18px">Routine hanches + chevilles</b><span class="note">Touche pour dérouler les 7 exercices</span></summary><ol>${ROUTINE.map(r=>`<li><span class="k">${esc(r.t)}</span><div><b>${esc(r.n)}</b><div class="note">${esc(r.d)}</div></div></li>`).join("")}</ol><p class="note" style="margin:10px 0 0">Étire jusqu'à 5-6/10 de tension, jamais de douleur. Respire lentement. Les jours de qualité : à faire après la séance, pas avant.</p></details>
+  <button class="btn ${done?"sec":""}" id="mobDone" style="margin-top:10px">${done?"Faite aujourd'hui ✓":"Marquer comme faite"}</button></div>`}
+
 function viewToday(){
   selDate=selDate||TODAY;
   const wk=weekBounds(selDate);const ci=S.checkins[selDate];const p=planFor(selDate);const wi=weekIndex(selDate);
   const iw=ivlWell(selDate);
   const r=readiness(ci||(iw&&iw[3]?{rhr:iw[3],hrv:iw[4],sleep:iw[5],p1:0,p2:0,energy:3,sore:1}:null));
   const fromWatch=!ci&&r;
-  const strip=`<div class="week">${wk.map(x=>{const dd=parse(x);const has=!!planFor(x);return `<button class="day ${x===selDate?"sel":""} ${x===TODAY?"today":""}" data-d="${x}"><small>${DOW[dd.getDay()]}</small><b>${dd.getDate()}</b><i class="${has?"on":""}"></i></button>`}).join("")}</div>`;
+  const strip=`<div class="week">${wk.map(x=>{const dd=parse(x);return `<button class="day ${x===selDate?"sel":""} ${x===TODAY?"today":""}" data-d="${x}"><small>${DOW[dd.getDay()]}</small><b>${dd.getDate()}</b><span class="dots">${dotsFor(x)}</span></button>`}).join("")}</div><div class="legend"><span><i class="dot run"></i>course</span><span><i class="dot swim"></i>natation</span><span><i class="dot gym"></i>salle</span><span><i class="dot mob"></i>mobilité</span></div>`;
   const prog=wi?`<div class="card"><div class="row between"><span class="lab">${esc(wi.ph.n)}</span><span class="num" style="font-size:20px">Semaine ${wi.n} sur ${wi.tot}</span></div><div class="bar" style="margin:10px 0"><div style="width:${Math.round(wi.n/wi.tot*100)}%"></div></div><div class="note">${esc(wi.ph.goal)}</div></div>`:"";
-  const ready=r?`<div class="card"><div class="row between"><span class="lab">Forme du jour${fromWatch?" · données montre":""}</span><span><i class="light ${r.col}"></i> <b class="num" style="font-size:22px">${r.sc}</b>/100</span></div><p style="margin:8px 0 0">${esc(r.msg)}</p>${r.why.length?`<div class="note" style="margin-top:6px">Facteurs : ${esc(r.why.join(", "))}</div>`:""}${fromWatch?`<div class="note" style="margin-top:6px">Basé sur FC repos ${iw[3]}, VFC ${iw[4]??"–"}, sommeil ${iw[5]??"–"} h (Intervals). Ajoute ton ressenti ci-dessous pour affiner.</div>`:""}</div>`:`<div class="card"><span class="lab">Forme du jour</span><p style="margin:6px 0 0" class="note">Remplis le check-in ci-dessous pour obtenir ton feu vert / orange / rouge.</p></div>`;
+  const Wl=(S.ivl&&S.ivl.well)||[],lw=iw||Wl[Wl.length-1]||null;
+  const frs=lw&&lw[1]!=null&&lw[2]!=null?Math.round(lw[1]-lw[2]):null,sl=lw&&lw[6]!=null?Math.round(lw[6]):null,slh=lw&&lw[5]!=null?lw[5]:(ci&&ci.sleep)||null;
+  const ready=`<div class="card"><div class="rings">${ring(r?r.sc:"–",r?r.sc/100:0,"var(--lime)","forme")}${ring(sl!=null?sl:"–",sl!=null?sl/100:0,"var(--cyan)","sommeil"+(slh?" · "+String(slh).replace(".",",")+" h":""))}${ring(frs!=null?(frs>0?"+":"")+frs:"–",frs!=null?(frs+30)/60:0,"var(--violet)","fraîcheur")}</div>${r?`<p style="margin:0"><i class="light ${r.col}"></i> <b>${esc(r.msg)}</b></p>${r.why.length?`<div class="note" style="margin-top:6px">Facteurs : ${esc(r.why.join(", "))}</div>`:""}${fromWatch?`<div class="note" style="margin-top:6px">Basé sur FC repos ${iw[3]}, VFC ${iw[4]??"–"}, sommeil ${iw[5]??"–"} h (Intervals). Ajoute ton ressenti ci-dessous pour affiner.</div>`:""}`:`<p class="note" style="margin:0">Remplis le check-in ci-dessous pour obtenir ton feu vert / orange / rouge.</p>`}</div>`;
   const sess=p?`<div class="card lime"><div class="row between"><span class="lab">${esc(KIND[p.k]||"Séance")} · ${esc(p.dur||"")}</span><span>${p.mod?`<span class="chip">ajusté</span> `:""}${onWatch(selDate)?`<span class="chip lime">⌚ sur la montre</span>`:""}</span></div><h2 style="font-size:40px;line-height:1;margin:6px 0 2px">${esc(p.t)}</h2><div style="font-size:13px;margin-bottom:6px">${esc(fmtLong(selDate))}</div>${p.run?`<div style="font-weight:600;margin:6px 0">+ ${esc(p.run)}</div>`:""}<ul class="ex">${p.d1.map((e,i)=>`<li><span class="k">${i+1}</span><span>${esc(e)}</span></li>`).join("")}</ul><p style="font-size:13px;margin:12px 0 0"><b>Pourquoi :</b> ${esc(p.why||"")}</p></div>`
    :`<div class="card"><span class="lab">${esc(fmtLong(selDate))}</span><h2 style="font-size:32px;margin-top:6px">Repos / libre</h2><p class="note">Aucune séance au plan. Mobilité 5-8 min conseillée.</p></div>`;
   const done=ivlActs().filter(a=>a[0]===selDate&&a[2]!=="walk"&&a[2]!=="ride");
   const doneCard=done.length?`<div class="card"><span class="lab">Réalisé · Intervals</span>${done.map(a=>`<div class="done">✓ ${esc(actLine(a))}</div>`).join("")}</div>`:"";
   const B=bilan(selDate);
-  const bilanCard=B?`<div class="card"><div class="row between"><span class="lab">Bilan de séance</span><i class="light ${B.lv}"></i></div>${B.L.map(l=>`<p style="margin:8px 0 0;font-size:14px">${esc(l)}</p>`).join("")}<div class="note" style="margin-top:10px">Constat automatique. Il ne change rien à ton plan : si une adaptation se justifie, elle apparaît dans l'onglet Coach et tu valides.</div><div style="margin-top:10px"><button class="btn sec" id="bilAsk" data-q="${esc("Fais le bilan de ma séance du "+selDate+" ("+B.L[0]+") et dis-moi si la suite doit être ajustée.")}">Copier le bilan pour Claude</button></div></div>`:"";
+  const bilanCard=B?`<div class="card"><div class="row between"><span class="lab">Bilan de séance</span><i class="light ${B.lv}"></i></div>${B.L.slice(0,1).map(l=>`<p style="margin:8px 0 0;font-size:14px">${esc(l)}</p>`).join("")}${B.reps?repsChart(B.qd,B.reps):""}${B.L.slice(1).map(l=>`<p style="margin:8px 0 0;font-size:14px">${esc(l)}</p>`).join("")}<div class="note" style="margin-top:10px">Constat automatique. Il ne change rien à ton plan : si une adaptation se justifie, elle apparaît dans l'onglet Coach et tu valides.</div><div style="margin-top:10px"><button class="btn sec" id="bilAsk" data-q="${esc("Fais le bilan de ma séance du "+selDate+" ("+B.L[0]+") et dis-moi si la suite doit être ajustée.")}">Copier le bilan pour Claude</button></div></div>`:"";
   const c0=ci||{};
   const c={...c0,rhr:c0.rhr??iw?.[3],hrv:c0.hrv??iw?.[4],sleep:c0.sleep??iw?.[5],w:c0.w??iw?.[8]};
   const form=`<div class="card"><h3 style="font-size:24px">Check-in du matin</h3>${!ci&&iw?`<div class="note">FC repos, VFC et sommeil pré-remplis depuis ta montre (Intervals).</div>`:""}
@@ -269,12 +299,13 @@ function viewToday(){
   <div class="row" style="margin-top:12px"><label style="margin:0;display:flex;gap:8px;align-items:center"><input type="checkbox" id="f_ill" style="width:auto" ${c.ill?"checked":""}> Signes de maladie / toux</label><label style="margin:0;display:flex;gap:8px;align-items:center"><input type="checkbox" id="f_prot" style="width:auto" ${c.prot?"checked":""}> Protéines atteintes</label></div>
   <div style="margin-top:14px"><button class="btn" id="saveCi">Enregistrer le check-in</button></div><div class="note" id="ciMsg" style="margin-top:8px"></div></div>`;
   const conn=!getKey()?`<div class="card lime"><span class="lab">Première étape</span><h2 style="font-size:30px;margin:6px 0">Connecte Intervals</h2><p style="font-size:14px;margin:0 0 10px">Pour afficher ton sommeil, ta FC, tes séances réalisées et envoyer les adaptations vers ta montre.</p><button class="btn" style="background:#0a0a0a;color:#f4f4f0" id="goSet">Ouvrir les réglages</button></div>`:"";
-  return head(fmtLong(TODAY))+conn+strip+prog+sess+doneCard+bilanCard+ready+form;
+  return head(fmtLong(TODAY))+conn+strip+ready+sess+doneCard+bilanCard+mobCard()+prog+form;
 }
 function wireToday(){
   document.querySelectorAll(".day").forEach(b=>b.onclick=()=>{selDate=b.dataset.d;render()});
   wireSeg();
   const ba=$("#bilAsk");if(ba)ba.onclick=()=>copyForClaude(ba.dataset.q);
+  const md=$("#mobDone");if(md)md.onclick=()=>{S.mob[selDate]=!S.mob[selDate];lsSave();render()};
   const gs=$("#goSet");if(gs)gs.onclick=()=>setTab("coach");
   $("#saveCi").onclick=async()=>{
     const n=id=>{const v=$("#f_"+id).value;return v===""?null:+v};
@@ -298,7 +329,7 @@ function viewWeek(){
     done.forEach(a=>{if(a[2]==="run")dk+=a[4];if(a[2]==="swim")ds++;if(a[2]==="gym")dg++});
     const av=S.avail[parse(d).getDay()];
     const missed=p&&d<TODAY&&!done.length&&S.ivl;
-    return `<div class="ph dayrow" data-d="${d}"><div class="num" style="min-width:50px;font-size:18px">${DOW[parse(d).getDay()]} ${parse(d).getDate()}${d===TODAY?`<div class="note" style="color:var(--lime)">auj.</div>`:""}</div><div style="min-width:0;flex:1">
+    return `<div class="ph dayrow" data-d="${d}"><div class="num" style="min-width:50px;font-size:18px">${DOW[parse(d).getDay()]} ${parse(d).getDate()}${d===TODAY?`<div class="note" style="color:var(--ok)">auj.</div>`:""}<div class="dots" style="justify-content:flex-start;margin-top:6px">${dotsFor(d)}</div></div><div style="min-width:0;flex:1">
     ${p?`<b style="font-size:19px">${esc(p.t)}</b><div class="note">${esc(KIND[p.k]||"")} · ${esc(p.dur||"")}${p.mod?" · ajusté":""}</div>`:`<span class="note">Pas de séance au plan</span>`}
     ${done.map(a=>`<div class="done">✓ ${esc(actLine(a))}</div>`).join("")}
     ${missed?`<div class="note warn">Rien enregistré pour cette séance</div>`:""}
