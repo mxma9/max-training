@@ -38,7 +38,7 @@ const GOALS="10 km sous 40:00 (3:59/km) ; marathon de Rome le 14 mars 2027 (obje
 const ROME="2027-03-14";
 
 /* ---------- État & stockage ---------- */
-let S={checkins:{},journal:[],profile:{...PROFILE0},over:{},ign:{},ivl:null,base:{},avail:{},mob:{}};
+let S={checkins:{},journal:[],profile:{...PROFILE0},over:{},ign:{},ivl:null,base:{},avail:{},mob:{},tm:{}};
 let tab="today",selDate=null,weekAnchor=null,coachPrefill="";
 const LS="max-training-v3";
 const $=s=>document.querySelector(s);
@@ -52,7 +52,7 @@ const fmtLong=s=>parse(s).toLocaleDateString("fr-BE",{weekday:"long",day:"numeri
 const fmtShort=s=>parse(s).toLocaleDateString("fr-BE",{day:"numeric",month:"short"});
 
 function lsSave(){try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}}
-function lsLoad(){try{const v=JSON.parse(localStorage.getItem(LS)||"null");if(v)S={...S,...v,profile:{...PROFILE0,...(v.profile||{})}}}catch(e){}}
+function lsLoad(){try{const v=JSON.parse(localStorage.getItem(LS)||"null");if(v)S={...S,...v,profile:{...PROFILE0,...(v.profile||{})}};S.tm=S.tm||{}}catch(e){}}
 async function put(){lsSave();return true}
 async function del(){lsSave()}
 
@@ -89,18 +89,20 @@ const fmtDur=m=>m>=60?Math.floor(m/60)+" h "+pad(m%60):m+" min";
 function bilan(date){
   const acts=ivlActs().filter(a=>a[0]===date&&a[2]==="run"&&a[4]>0);
   if(!acts.length)return null;
-  const km=acts.reduce((s,a)=>s+a[4],0),min=acts.reduce((s,a)=>s+(a[5]||0),0);
+  const tm=S.tm?.[date],tmSp=tm&&(tm.sp||[]).filter(v=>v>0),tmKm=tm&&tm.km>0?tm.km:0;
+  const km=tmKm||acts.reduce((s,a)=>s+a[4],0),min=acts.reduce((s,a)=>s+(a[5]||0),0);
   const hr=min?acts.reduce((s,a)=>s+(a[6]||0)*(a[5]||0),0)/min:0;
   const rpe=Math.max(0,...acts.map(a=>a[7]||0));
   const pace=km?min*60/km:0,plan=PKM[date],q=QUAL[date],x=S.ivl?.bil?.[date];
   const L=[];let lv="g";const up=l=>{if(l==="r"||(l==="o"&&lv==="g"))lv=l};
-  L.push(km.toFixed(1)+" km"+(plan?" (prévu "+plan+")":"")+" · "+fmtDur(Math.round(min))+" · allure moy. "+fmtPace(pace)+"/km"+(hr?" · FC moy. "+Math.round(hr):""));
+  L.push(km.toFixed(1)+" km"+(plan?" (prévu "+plan+")":"")+(tmKm?" (tapis)":"")+" · "+fmtDur(Math.round(min))+" · allure moy. "+fmtPace(pace)+"/km"+(hr?" · FC moy. "+Math.round(hr):""));
   if(plan&&km<plan*.9){L.push("Volume en dessous du plan.");up("o")}
   if(plan&&km>plan*1.15){L.push("Volume au-dessus du plan : ne compense pas sur les jours suivants.");up("o")}
   if(q){
-    if(x&&x.reps&&x.reps.length){
-      const r=x.reps,inT=r.filter(v=>v>=q.lo-3&&v<=q.hi+3).length,slow=r.filter(v=>v>q.stop).length;
-      L.push("Répétitions : "+r.map(fmtPace).join(" · ")+" (cible "+fmtPace(q.lo)+"-"+fmtPace(q.hi)+")");
+    const rs=tmSp&&tmSp.length?tmSp.map(v=>3600/v):(x&&x.reps&&x.reps.length?x.reps:null);
+    if(rs){
+      const r=rs,inT=r.filter(v=>v>=q.lo-3&&v<=q.hi+3).length,slow=r.filter(v=>v>q.stop).length;
+      L.push((tmSp&&tmSp.length?"Allures du tapis : ":"Répétitions : ")+r.map(fmtPace).join(" · ")+" (cible "+fmtPace(q.lo)+"-"+fmtPace(q.hi)+")");
       if(slow){L.push(slow+" répétition(s) au-delà de la limite d'arrêt : la charge est trop haute pour l'instant.");up("r")}
       else if(inT<r.length){L.push(inT+"/"+r.length+" dans la cible.");up("o")}
       else L.push("Toutes les répétitions dans la cible.");
@@ -112,7 +114,7 @@ function bilan(date){
     else if(hr)L.push("FC sous "+FCMAX_EASY+" : allure facile respectée.");
   }
   if(rpe>=(q?9:6)){L.push("RPE "+rpe+"/10 : plus dur que prévu pour cette séance.");up("o")}
-  return {lv,L,km,min,hr,rpe,q:!!q,reps:(q&&x&&x.reps&&x.reps.length)?x.reps:null,qd:q||null};
+  return {lv,L,km,min,hr,rpe,q:!!q,reps:q&&tmSp&&tmSp.length?tmSp.map(v=>3600/v):(q&&x&&x.reps&&x.reps.length?x.reps:null),qd:q||null};
 }
 
 
@@ -286,6 +288,18 @@ function mobCard(){
   <details class="mob"><summary><b style="font-family:Sora;font-size:18px">Routine hanches + chevilles</b><span class="note">Touche pour dérouler les 7 exercices</span></summary><ol>${ROUTINE.map(r=>`<li>${POSES[r.p]||""}<div><div class="row" style="gap:8px;flex-wrap:nowrap"><b>${esc(r.n)}</b><span class="k">${esc(r.t)}</span></div><div class="note">${esc(r.d)}</div></div></li>`).join("")}</ol><p class="note" style="margin:10px 0 0">Étire jusqu'à 5-6/10 de tension, jamais de douleur. Respire lentement. Les jours de qualité : à faire après la séance, pas avant.</p></details>
   <button class="btn ${done?"sec":""}" id="mobDone" style="margin-top:10px">${done?"Faite aujourd'hui ✓":"Marquer comme faite"}</button></div>`}
 
+/* mode tapis : la vitesse affichée par le tapis remplace les allures de la montre */
+const kmhPace=v=>v>0?fmtPace(3600/v)+"/km":"–";
+function tmCard(){
+  const q=QUAL[selDate];if(!q||q.solo||selDate>TODAY)return "";
+  const N=+((q.n.match(/(\d+)\s*[×x]/)||[])[1])||5,t=S.tm[selDate]||{},sp=t.sp||[];
+  const has=sp.some(v=>v>0);
+  return `<details class="card tm" ${has?"open":""}><summary class="row between" style="cursor:pointer"><span class="lab">Séance sur tapis</span><span class="chip ${has?"lime":""}">${has?"vitesses saisies":"saisir"}</span></summary>
+  <p class="note" style="margin:10px 0">La montre sous-estime fortement l'allure sur tapis. Entre la vitesse affichée par le tapis pour chaque répétition (laisse vide une répétition non faite) : l'app calcule les vraies allures.</p>
+  <div class="grid2">${Array.from({length:N},(_,i)=>`<div><label>Rép. ${i+1} (km/h)</label><input class="tmsp" data-i="${i}" type="number" step="0.1" inputmode="decimal" value="${sp[i]||""}" placeholder="ex. 15.3"><div class="note tmp" data-i="${i}">${kmhPace(sp[i])}</div></div>`).join("")}
+  <div><label>Distance tapis (km)</label><input id="tmKm" type="number" step="0.01" inputmode="decimal" value="${t.km||""}" placeholder="ex. 11.2"></div></div>
+  <div class="note" style="margin-top:8px">Cible : ${fmtPace(q.lo)}-${fmtPace(q.hi)}/km = ${(3600/q.hi).toFixed(1)}-${(3600/q.lo).toFixed(1)} km/h · arrêt à ${fmtPace(q.stop)}/km (${(3600/q.stop).toFixed(1)} km/h). Pente conseillée : 1 %.</div>
+  <div style="margin-top:12px"><button class="btn" id="tmSave">Enregistrer</button></div></details>`}
 function viewToday(){
   selDate=selDate||TODAY;
   const wk=weekBounds(selDate);const ci=S.checkins[selDate];const p=planFor(selDate);const wi=weekIndex(selDate);
@@ -316,12 +330,17 @@ function viewToday(){
   <div class="row" style="margin-top:12px"><label style="margin:0;display:flex;gap:8px;align-items:center"><input type="checkbox" id="f_ill" style="width:auto" ${c.ill?"checked":""}> Signes de maladie / toux</label><label style="margin:0;display:flex;gap:8px;align-items:center"><input type="checkbox" id="f_prot" style="width:auto" ${c.prot?"checked":""}> Protéines atteintes</label></div>
   <div style="margin-top:14px"><button class="btn" id="saveCi">Enregistrer le check-in</button></div><div class="note" id="ciMsg" style="margin-top:8px"></div></div>`;
   const conn=!getKey()?`<div class="card lime"><span class="lab">Première étape</span><h2 style="font-size:30px;margin:6px 0">Connecte Intervals</h2><p style="font-size:14px;margin:0 0 10px">Pour afficher ton sommeil, ta FC, tes séances réalisées et envoyer les adaptations vers ta montre.</p><button class="btn" style="background:#0a0a0a;color:#f4f4f0" id="goSet">Ouvrir les réglages</button></div>`:"";
-  return head(fmtLong(TODAY))+conn+strip+ready+sess+doneCard+bilanCard+mobCard()+prog+form;
+  return head(fmtLong(TODAY))+conn+strip+ready+sess+doneCard+tmCard()+bilanCard+mobCard()+prog+form;
 }
 function wireToday(){
   document.querySelectorAll(".day").forEach(b=>b.onclick=()=>{selDate=b.dataset.d;render()});
   wireSeg();
   const ba=$("#bilAsk");if(ba)ba.onclick=()=>copyForClaude(ba.dataset.q);
+  document.querySelectorAll(".tmsp").forEach(inp=>inp.oninput=()=>{const p=document.querySelector(`.tmp[data-i="${inp.dataset.i}"]`);if(p)p.textContent=kmhPace(+inp.value.replace(",","."))});
+  const ts=$("#tmSave");if(ts)ts.onclick=()=>{
+    const num=v=>{const n=parseFloat(String(v).replace(",","."));return n>0?n:0};
+    const sp=[...document.querySelectorAll(".tmsp")].map(i=>num(i.value));
+    S.tm[selDate]={sp,km:num($("#tmKm").value)};lsSave();render()};
   const md=$("#mobDone");if(md)md.onclick=()=>{S.mob[selDate]=!S.mob[selDate];lsSave();render()};
   const gs=$("#goSet");if(gs)gs.onclick=()=>setTab("coach");
   $("#saveCi").onclick=async()=>{
