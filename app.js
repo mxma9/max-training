@@ -2,7 +2,7 @@
 /* ---------- Données du plan ---------- */
 const PHASES=[
  {n:"Transition",s:"2026-11-09",e:"2026-11-15",goal:"Reprise propre : volume modéré, 0 plyo, relancer salle + natation."},
- {n:"Phase 1 · Base & seuil",s:"2026-11-16",e:"2026-12-13",goal:"Footings à FC < 140, seuil 4:22-4:28, VO2max 1000/800 m, volume 50-55 km, test 5 km le 28 nov. Détaillé jusqu'au 29 nov ; la suite dépend de ton planning de travail."},
+ {n:"Phase 1 · Base & seuil",s:"2026-11-16",e:"2026-12-13",goal:"Footings à FC < 140, seuil 4:22-4:28, VO2max 1000/800 m, volume 50-55 km, contrôle 5 km le 28 nov. Détaillé jusqu'au 29 nov ; la suite dépend de ton planning de travail."},
  {n:"À reconstruire",s:"2026-12-14",e:"2027-03-14",goal:"Proposition à valider : 10 km sous 40:00 en décembre-janvier, puis bloc marathon pour Rome (14 mars 2027). Plan détaillé une fois ton planning connu."}
 ];
 const GYM={
@@ -18,23 +18,23 @@ const PLAN=[
  {d:"2026-11-20",k:"run",t:"Seuil 3×10'",dur:"75'",d1:["Échauffement 15' + gammes","3×10' à 4:24-4:28 (FC 172-178), récup 90 s trot","Retour au calme 10'","Soir (option) : Core + haut du corps léger 30'"],why:"Seuil à 48 h de la longue. Arrête à 2×10 si la 1re rep est à RPE 9."},
  {d:"2026-11-21",k:"mob",t:"Mobilité + footing",dur:"30' + 30'",d1:["Footing facile 5 km à 6:00-6:15, FC < 140","Mobilité 25-30' : hanches, chevilles, thoracique, fessiers","Dîner riche en glucides"],why:"Veille de sortie longue."},
  {d:"2026-11-22",k:"long",t:"Sortie longue 16 km",dur:"1h40",d1:["16 km à 6:00-6:15, zone 2 stricte, FC < 140","Sans finish rapide"],why:"Total de la semaine : ~55 km."},
- {d:"2026-11-23",k:"push",t:"Footing + Push",dur:"40' + 60'",d1:["Matin : footing facile 6 km à 6:00-6:15, FC < 140","Push : développé couché 4×6, incliné 3×8, dips lestés 3×8, élévations latérales 3×12-15, triceps 3×12"],why:"Semaine du test : volume un peu réduit."},
+ {d:"2026-11-23",k:"push",t:"Footing + Push",dur:"40' + 60'",d1:["Matin : footing facile 6 km à 6:00-6:15, FC < 140","Push : développé couché 4×6, incliné 3×8, dips lestés 3×8, élévations latérales 3×12-15, triceps 3×12"],why:"Semaine du contrôle : volume un peu réduit."},
  {d:"2026-11-24",k:"run",t:"VO2max + Legs allégés",dur:"70' + 45'",d1:["Matin : échauffement 15' + gammes + 4 strides","6×800 m à 3:50-3:55, récup 90 s trot (stop à 4 reps si > 4:00)","Retour au calme 10'","Soir (≥ 6 h après) : Legs allégés — squat 3×5, RDL 3×6-8, hip thrust 3×8-10, mollets 3×12, préhab"],why:"Dernière séance de vitesse avant le test."},
  {d:"2026-11-25",k:"pull",t:"Natation #1 + Pull",dur:"50' + 60'",d1:["Matin : natation 2 000 m (300 m échauffement, 6×50 éducatifs, 5×200 continu à 20 s de repos, 400 m souple)",...GYM.pull],why:"Journée tampon avant le seuil de jeudi."},
  {d:"2026-11-26",k:"run",t:"Seuil 3×12'",dur:"80'",d1:["Échauffement 15' + gammes","3×12' à 4:22-4:26, récup 90 s trot","Retour au calme 10'"],why:"Seuil à 48 h du test 5 km. Arrête à 2×12 si la 1re rep est à RPE 9."},
  {d:"2026-11-27",k:"swim",t:"Footing + Natation #2 + mobilité",dur:"35' + 40' + 25'",d1:["Matin : footing très facile 5 km à 6:15 + 4 lignes droites × 20 s","Mobilité 25' : hanches, chevilles, thoracique","Soir : natation 1 500 m facile"],why:"Veille du test : sommeil, hydratation, glucides au dîner."},
- {d:"2026-11-28",k:"run",t:"TEST 5 km",dur:"75'",d1:["Échauffement 20' + gammes + 4 strides","5 km : 3:46-3:48 sur les 2 premiers km, puis tout donner (cible 18:40-18:50)","Retour au calme 10-15'"],why:"Mesure ta référence actuelle pour valider le sub-40 sur 10 km."},
+ {d:"2026-11-28",k:"run",t:"CONTRÔLE 5 km",dur:"75'",d1:["Échauffement 20' + gammes + 4 strides","5 km : 3:46-3:48 sur les 2 premiers km, puis tout donner (cible 18:40-18:50)","Retour au calme 10-15'"],why:"Contrôle : une heure de référence réelle pour valider le sub-40 sur 10 km et fixer l'allure marathon."},
  {d:"2026-11-29",k:"long",t:"Sortie longue 14 km",dur:"1h25",d1:["14 km à 6:00-6:15, FC < 140, très facile après le test"],why:"Dernier jour avant la reprise du travail (30 nov) : plan à recalibrer."}
 ];
 const PKM={"2026-11-16":7,"2026-11-17":10,"2026-11-19":8,"2026-11-20":11,"2026-11-21":5,"2026-11-22":16,"2026-11-23":6,"2026-11-24":9,"2026-11-26":12,"2026-11-27":5,"2026-11-28":10,"2026-11-29":14};
 /* séances de qualité : allure cible en s/km (lo-hi), limite d'arrêt ; m = longueur d'une répétition (m), t = durée (s) */
-const QUAL={"2026-11-17":{n:"VO2max 5×1000 m",lo:232,hi:237,stop:243,m:1000},"2026-11-24":{n:"VO2max 6×800 m",lo:230,hi:235,stop:240,m:800},"2026-11-20":{n:"Seuil 3×10 min",lo:264,hi:268,stop:274,t:600},"2026-11-26":{n:"Seuil 3×12 min",lo:262,hi:266,stop:272,t:720},"2026-11-28":{n:"Test 5 km",lo:218,hi:228,stop:236,solo:true}};
+const QUAL={"2026-11-17":{n:"VO2max 5×1000 m",lo:232,hi:237,stop:243,m:1000},"2026-11-24":{n:"VO2max 6×800 m",lo:230,hi:235,stop:240,m:800},"2026-11-20":{n:"Seuil 3×10 min",lo:264,hi:268,stop:274,t:600},"2026-11-26":{n:"Seuil 3×12 min",lo:262,hi:266,stop:272,t:720},"2026-11-28":{n:"Contrôle 5 km",lo:218,hi:228,stop:236,solo:true}};
 const FCMAX_EASY=140;
-const KIND={mob:"Mobilité",push:"Push",pull:"Pull",legs:"Legs",run:"Course",long:"Sortie longue",swim:"Natation",pilates:"Pilates",climb:"Escalade",rest:"Repos"};
+const KIND={mob:"Mobilité",push:"Push",pull:"Pull",legs:"Legs",fa:"Full body A",fb:"Full body B",run:"Course",long:"Sortie longue",swim:"Natation",pilates:"Pilates",climb:"Escalade",rest:"Repos"};
 const ACT={run:"Course",swim:"Natation",gym:"Salle",pilates:"Pilates",mob:"Mobilité",climb:"Escalade",walk:"Marche",ride:"Vélo",autre:"Autre"};
 const AVAIL=["Libre","Matin pris","Soir pris","Journée prise"];
 const PROFILE0={labels:["Zone sensible 1","Zone sensible 2"],target:null};
-const GOALS="10 km sous 40:00 (3:59/km) ; marathon de Rome le 14 mars 2027 (objectif à fixer après le test 5 km) ; PR semi mis de côté";
+const GOALS="10 km sous 40:00 (3:59/km) ; marathon de Rome le 14 mars 2027 (objectif 3:05-3:10 à confirmer après le contrôle 5 km et la tentative 10 km) ; swimrun plus tard, sans date ; PR semi mis de côté";
 const ROME="2027-03-14";
 
 /* ---------- État & stockage ---------- */
@@ -82,6 +82,107 @@ function readiness(c){
 function weekBounds(date){const d=parse(date);const m=(d.getDay()+6)%7;const a=new Date(d);a.setDate(d.getDate()-m);return [...Array(7)].map((_,i)=>{const x=new Date(a);x.setDate(a.getDate()+i);return iso(x)})}
 function weekIndex(date){const ph=phaseFor(date);if(!ph)return null;const n=Math.floor((parse(date)-parse(ph.s))/6048e5)+1;const tot=Math.ceil((parse(ph.e)-parse(ph.s)+864e5)/6048e5);return {ph,n,tot}}
 const daysTo=s=>Math.round((parse(s)-parse(TODAY))/864e5);
+/* ---------- Plan 30 nov. 2026 → 14 mars 2027 (généré ; horaires libres, à recaler quand le planning de travail est connu) ---------- */
+(function(){
+const sec=p=>{const[a,b]=p.split(":").map(Number);return a*60+b};
+const ad=(d,n)=>{const x=parse(d);x.setDate(x.getDate()+n);return iso(x)};
+const EZ="6:00-6:15",AM="4:25-4:30";
+GYM.A=["Squat 4×5 (RPE 7-8)","Développé couché ou incliné 3×6-8","Tractions (assistées si besoin) 3×6-8","Hip thrust 3×8","Rotations externes d'épaule 2×15","Pallof press 3×10 par côté","Mollets debout 3×12","Finisher bras : curl barre EZ 3×10 + extension triceps poulie 3×12 (superset)"];
+GYM.B=["Soulevé de terre roumain 3×8","Fente arrière ou split squat bulgare 3×8 par côté","Leg extension lent (descente 3 s) 2×12-15","Développé militaire haltères 3×8","Rowing buste appuyé 3×10","Tirage vertical ou pull-over poulie 3×10","Mollets assis 3×12","Dead bug 3×10","Finisher bras : curl marteau 3×12 + barre au front ou dips banc 3×10 (superset)"];
+const GYM_LIGHT=a=>a.map(x=>x.replace(/ (\d)×/," $1×")).slice(0,-1);
+/* séances de qualité : [titre, lignes, km, durée, lo, hi, {m|t}] — lo/hi en m:ss/km */
+const V={ // mardi
+ 1:["Fartlek 6×2'",["6×2' à 3:55-4:00 (allure 10 km), récup 2' trot"],11,"55'","3:55","4:00",{t:120}],
+ 2:["VO2max 5×1000 m",["5×1000 m à 3:52-3:57, récup 2' trot (stop à 4 reps si > 4:03)"],12,"65'","3:52","3:57",{m:1000}],
+ 3:["VO2max 6×800 m",["6×800 m à 3:50-3:55, récup 90 s trot (stop à 4 reps si > 4:00)"],11,"60'","3:50","3:55",{m:800}],
+ 4:["8×400 m",["8×400 m à 3:48-3:52, récup 60 s trot (semaine de fêtes : volume réduit)"],9,"50'","3:48","3:52",{m:400}],
+ 5:["VO2max 5×1000 m",["5×1000 m à 3:50-3:55, récup 2' trot (stop à 4 reps si > 4:01)"],12,"65'","3:50","3:55",{m:1000}],
+ 6:["10 km spé 5×1200 m",["5×1200 m à 3:55-3:58, récup 90 s trot"],13,"65'","3:55","3:58",{m:1200}],
+ 7:["10 km spé 4×1600 m",["4×1600 m à 3:57-4:00, récup 2' trot"],14,"70'","3:57","4:00",{m:1600}],
+ 8:["3×1000 m + lignes droites",["3×1000 m à 3:55-3:58, récup 2' trot","4 lignes droites × 20 s"],9,"50'","3:55","3:58",{m:1000}],
+ 9:["Seuil 3×2 km",["3×2 km à 4:22-4:26, récup 2' trot"],13,"65'","4:22","4:26",{m:2000}],
+ 10:["VO2max 5×1000 m",["5×1000 m à 3:52-3:57, récup 2' trot"],12,"65'","3:52","3:57",{m:1000}],
+ 11:["Seuil 3×15'",["3×15' à 4:22-4:26, récup 2' trot"],13,"75'","4:22","4:26",{t:900}],
+ 12:["Seuil 2×20'",["2×20' à 4:24-4:28, récup 3' trot"],12,"70'","4:24","4:28",{t:1200}],
+ 13:["Seuil 3×2 km",["3×2 km à 4:22-4:26, récup 2' trot"],12,"60'","4:22","4:26",{m:2000}],
+ 14:["4×1000 m",["4×1000 m à 3:55-3:58, récup 2' trot"],9,"50'","3:55","3:58",{m:1000}],
+ 15:["Rappel d'allure 3×1000 m",["3×1000 m à "+AM+", récup 90 s trot"],7,"40'","4:25","4:30",{m:1000}]
+};
+const F={ // vendredi
+ 1:["Seuil 2×12'",["2×12' à 4:24-4:28, récup 2' trot"],11,"60'","4:24","4:28",{t:720}],
+ 2:["Seuil 3×10'",["3×10' à 4:24-4:28, récup 90 s trot"],11,"65'","4:24","4:28",{t:600}],
+ 3:["Seuil 3×12'",["3×12' à 4:22-4:26, récup 90 s trot"],12,"70'","4:22","4:26",{t:720}],
+ 4:["Seuil 2×10'",["2×10' à 4:24-4:28, récup 90 s trot"],9,"55'","4:24","4:28",{t:600}],
+ 5:["Seuil 4×8'",["4×8' à 4:22-4:26, récup 60 s trot"],12,"65'","4:22","4:26",{t:480}],
+ 6:["Seuil 2×15'",["2×15' à 4:22-4:26, récup 2' trot"],12,"65'","4:22","4:26",{t:900}],
+ 7:["Seuil 3×12'",["3×12' à 4:22-4:26, récup 90 s trot","4 lignes droites × 20 s"],12,"70'","4:22","4:26",{t:720}],
+ 9:["Allure marathon 2×5 km",["2×5 km à "+AM+", récup 3' footing"],15,"80'","4:25","4:30",{m:5000}],
+ 10:["Allure marathon 2×7 km",["2×7 km à "+AM+", récup 3' footing"],17,"90'","4:25","4:30",{m:7000}],
+ 11:["Allure marathon 2×8 km",["2×8 km à "+AM+", récup 3' footing"],20,"105'","4:25","4:30",{m:8000}],
+ 12:["Allure marathon 10 km",["10 km continu à "+AM+""],14,"80'","4:25","4:30",{m:10000}],
+ 13:["Allure marathon 2×4 km",["2×4 km à "+AM+", récup 2' footing"],12,"65'","4:25","4:30",{m:4000}],
+ 14:["Allure marathon 3×3 km",["3×3 km à "+AM+", récup 2' footing"],12,"65'","4:25","4:30",{m:3000}]
+};
+const THU=[0,8,9,10,8,10,10,10,8,8,8,8,8,8,8,6];
+const SAT=[0,5,5,5,5,5,5,5,4,4,4,4,4,5,5,3];
+const LONG={1:16,2:18,3:20,4:14,5:18,6:20,7:22,9:22,10:24,11:26,12:32,13:20,14:16};
+const SW={ // [total m Lun, principal m, texte, total Jeu]
+ 1:[2000,1000,"5×200 continu à 20 s de repos",2000],2:[2200,1200,"6×200 continu à 20 s de repos",2000],3:[2200,1200,"3×400 continu à 30 s de repos",2000],4:[2000,1000,"5×200 continu à 20 s de repos",2000],5:[2500,1600,"4×400 continu à 30 s de repos",2000],
+ 6:[2500,1600,"8×200 à 20 s de repos (allure un peu plus vive)",2200],7:[2500,1600,"4×400 continu à 30 s de repos",2200],8:[2000,1000,"5×200 continu à 20 s de repos",2000],
+ 9:[2500,1600,"4×400 continu à 30 s de repos",2200],10:[2500,1600,"8×200 à 20 s de repos",2200],11:[2500,1600,"4×400 continu à 30 s de repos",2200],12:[2500,1600,"8×200 à 20 s de repos",2200],
+ 13:[2200,1200,"6×200 à 20 s de repos",2000],14:[2000,1000,"5×200 à 20 s de repos",1800],15:[1500,0,"",0]
+};
+const swim1=w=>{const[t,m,txt]=SW[w];if(!m)return "Natation 1 500 m souple, sans chrono";return `Natation ${t} m (300 m échauffement, 6×50 éducatifs, ${txt}, ${t-600-m} m souple)`};
+const swim2=w=>{const t=SW[w][3];return `Natation ${t} m aérobie facile (300 m échauffement, 6×50 techniques, reste à allure confortable, pull-buoy possible sur 4×200)`};
+const WARM="Échauffement 15' + gammes",COOL="Retour au calme 10'";
+const PH_LINES=["Phase 2 · Base & vitesse","Phase 3 · 10 km","Phase 4 · Marathon","Phase 5 · Affûtage"];
+let km0=0;
+for(let w=1;w<=15;w++){
+  const mon=ad("2026-11-30",(w-1)*7),dm=i=>ad(mon,i);
+  const add=(i,o)=>{PLAN.push({d:dm(i),...o})};
+  const lt=w>=14&&w<=15,light13=w===13;
+  const gA=w===15?["Full body léger : squat à vide ou goblet 2×8, tirage 2×10, développé haltères 2×10, gainage 2×30 s. Aucun échec."]:w===14?GYM.A.slice(0,7).map(x=>x.replace(/^(.*?) (\d)×/,"$1 2×")):light13?GYM.A.map(x=>x):GYM.A;
+  const gB=w===13?GYM.B:GYM.B;
+  // Lundi
+  const mT=w===15?"Natation + Full body léger":w===14?"Natation + mobilité":"Natation #1 + Full body B";
+  add(0,{k:w===14?"swim":"fb",t:mT,dur:w===15?"35' + 40'":w===14?"45' + 25'":"50' + 60'",d1:[(w===15?"Matin : ":"Matin : ")+swim1(w),...(w===15?gA:w===14?["Mobilité 25' : hanches, chevilles, thoracique, fessiers (pas de salle : on arrive frais)"]:["Salle (full body B) :",...gB])],why:w===14?"Dernière semaine avant l'affûtage final : on protège les jambes.":"Full body B : jambes modérées, haut du corps et finisher bras. Loin des séances de qualité."});
+  // Mardi
+  const v=V[w];add(1,{k:"run",t:v[0],dur:v[3],d1:[WARM,...v[1],COOL],why:w<=5?"Phase 2 : vitesse aérobie et seuil.":w<=8?"Phase 3 : préparation du 10 km sous 40:00 (3:59/km).":w<=12?"Phase 4 : qualité d'entretien + spécifique marathon.":"Affûtage : on garde l'intensité, on réduit le volume."});
+  // Mercredi
+  add(2,w===15?{k:"mob",t:"Mobilité + repos",dur:"30'",d1:["Mobilité 20-25' : hanches, chevilles, thoracique","Marche ou repos, glucides, sommeil"],why:"Semaine du marathon : on arrive frais."}:{k:"fa",t:w===14?"Full body A léger":"Full body A (jambes lourdes)",dur:"60'",d1:["Salle (full body A) :",...gA,...(w===14?["Charges à 80 %, 2 séries, aucun échec"]:[])],why:w>=13?"Maintien, pas de fatigue résiduelle avant la course.":"Séance jambes lourde, à 48 h de la qualité du vendredi."});
+  // Jeudi
+  const tk=THU[w];add(3,{k:"run",t:w===15?"Footing + lignes droites":"Footing + Natation #2",dur:w===15?"35'":"55' + 45'",d1:[`Matin : footing facile ${tk} km à ${EZ}, FC < 140 + 4 lignes droites × 20 s`,...(w===15?[]:["Soir : "+swim2(w)])],why:"Jour facile entre deux séances de qualité."});
+  // Vendredi
+  if(F[w]){const f=F[w];add(4,{k:"run",t:f[0],dur:f[3],d1:[WARM,...f[1],COOL],why:w<=7?"Seuil : endurance au rythme du 10 km.":"Allure marathon : apprendre à tenir 4:25-4:30 sur la durée."});}
+  else add(4,{k:"mob",t:w===8?"Footing + lignes droites":"Repos actif",dur:w===8?"40'":"25'",d1:w===8?["Footing facile 6 km à "+EZ+" + 4 lignes droites × 20 s","Mobilité 15'"]:["Mobilité 20' ou 20' de trot très facile","Glucides, hydratation, sommeil"],why:w===8?"Veille de la tentative 10 km : fraîcheur avant tout.":"Veille du marathon : repos."});
+  // Samedi
+  const sk=SAT[w];add(5,{k:"mob",t:w===15?"Footing d'activation + mobilité":"Mobilité + footing",dur:w===15?"25' + 15'":"30' + 30'",d1:[`Footing facile ${sk} km à ${EZ}, FC < 140${w===15?" + 4 lignes droites":""}`,"Mobilité 25-30' : hanches, chevilles, thoracique, fessiers",...(w===15||w===8?["Dîner riche en glucides"]:[])],why:w===15?"Veille du marathon : dernière sortie, glucides et sommeil.":w===8?"Veille de la tentative 10 km.":"Veille de sortie longue."});
+  // Dimanche
+  if(w===8){add(6,{k:"run",t:"TENTATIVE 10 km",dur:"1h15",d1:["Échauffement 20' + gammes + 4 lignes droites","10 km : départ à 3:59-4:00, tenir régulier jusqu'au km 7, puis donner tout ce qui reste (objectif < 40:00)","Retour au calme 10-15'"],why:"Mesure ta forme avant le bloc marathon. Choisis un parcours plat et à l'abri du vent."})}
+  else if(w===15){add(6,{k:"run",t:"MARATHON DE ROME 42,2 km",dur:"~3h10",d1:["Échauffement léger 10' + lignes droites","Km 1-10 : "+"4:30-4:35 volontairement prudent","Km 10-30 : allure marathon (≈"+AM+"), régulier","Km 30-42 : tenir, puis donner si les jambes répondent","Plan nutrition : gel toutes les 30-35 min, eau à chaque ravitaillement"],why:"Objectif 3:05-3:10 à confirmer après la tentative 10 km."})}
+  else{const L=LONG[w];const fin=w===11?" Les 6 derniers km à "+AM+".":w===12?" Les 8 derniers km à "+AM+" (dernière grosse sortie, 3 semaines avant Rome).":w===13?" Les 8 derniers km à "+AM+".":"";
+    add(6,{k:"long",t:"Sortie longue "+L+" km",dur:Math.floor(L*6.1/60)+"h"+pad(Math.round(L*6.1)%60),d1:[`${L} km à ${EZ}, FC < 140${w>=9&&w<=12?" (gel ou boisson dès 1 h)":""}.${fin}`],why:w===4?"Semaine de fêtes : volume réduit, plaisir.":w===14?"Dernière longue : on laisse le corps absorber.":"Base aérobie pour la distance."})}
+  // distances
+  const q1=v[2],q2=F[w]?F[w][2]:(w===8?6:0),sun=w===8?14:w===15?42.2:LONG[w];
+  const wkm=q1+tk+q2+sk+sun;
+  PKM[dm(1)]=q1;PKM[dm(3)]=tk;if(q2)PKM[dm(4)]=q2;PKM[dm(5)]=sk;PKM[dm(6)]=sun;
+  // qualités suivies
+  const reg=(d,n,o)=>{QUAL[d]=Object.assign({n,lo:sec(o[4]),hi:sec(o[5]),stop:sec(o[5])+6},o[6])};
+  reg(dm(1),v[0],v);if(F[w])reg(dm(4),F[w][0],F[w]);
+  if(w===8)QUAL[dm(6)]={n:"Tentative 10 km",lo:236,hi:240,stop:246,solo:true};
+  if(w===15)QUAL[dm(6)]={n:"Marathon de Rome",lo:265,hi:270,stop:278,solo:true};
+  PLAN.find(p=>p.d===dm(6)).why+=` · semaine ${w}/15 : ~${Math.round(wkm)} km`;
+}
+// Phases
+const ph=PHASES;ph.length=0;
+ph.push({n:"Transition",s:"2026-11-09",e:"2026-11-15",goal:"Reprise propre : volume modéré, 0 plyo, relancer salle + natation."},
+ {n:"Phase 1 · Base & seuil",s:"2026-11-16",e:"2026-11-29",goal:"Footings à FC < 140, seuil 4:22-4:28, VO2max 1000/800 m, volume 50-55 km, contrôle 5 km le 28 nov (temps de référence)."},
+ {n:"Phase 2 · Base & vitesse",s:"2026-11-30",e:"2027-01-03",goal:"VO2max et seuil, full body A/B (2 séances par semaine), natation 2×/semaine, volume 48-58 km. Semaine allégée pendant les fêtes."},
+ {n:"Phase 3 · 10 km",s:"2027-01-04",e:"2027-01-24",goal:"Allure 10 km (3:57-4:00), seuil long, tentative 10 km sous 40:00 le 24 janvier."},
+ {n:"Phase 4 · Marathon",s:"2027-01-25",e:"2027-02-21",goal:"Séances à allure marathon (≈4:25-4:30), sortie longue jusqu'à 32 km le 21 février."},
+ {n:"Phase 5 · Affûtage",s:"2027-02-22",e:"2027-03-14",goal:"Volume en baisse sur 3 semaines, intensité maintenue, marathon de Rome le 14 mars 2027."});
+})();
+
 const fmtPace=sec=>Math.floor(sec/60)+":"+pad(Math.round(sec%60)).replace(/^60$/,"59");
 const fmtDur=m=>m>=60?Math.floor(m/60)+" h "+pad(m%60):m+" min";
 
@@ -250,7 +351,7 @@ function actLine(a){
 
 /* ---------- composants visuels ---------- */
 function dotsFor(d){const p=planFor(d);if(!p)return "";const t=(p.t+" "+(p.d1||[]).join(" ")).toLowerCase();const o=[];
-  if(/footing|course|vo2|seuil|sortie longue|test 5/.test(t))o.push("run");if(/natation/.test(t))o.push("swim");if(/push|pull|legs|salle|squat/.test(t))o.push("gym");if(/mobilité/.test(t))o.push("mob");
+  if(/footing|course|vo2|seuil|sortie longue|test 5/.test(t))o.push("run");if(/natation/.test(t))o.push("swim");if(/push|pull|legs|salle|squat|full body/.test(t))o.push("gym");if(/mobilité/.test(t))o.push("mob");
   return o.map(k=>`<span class="dot ${k}"></span>`).join("")}
 function ring(val,pct,color,label){const C=263.9,d=Math.round(Math.max(0,Math.min(1,pct))*C);
   return `<div class="ring"><div class="rg"><svg aria-hidden="true" width="74" height="74" viewBox="0 0 100 100" style="transform:rotate(-90deg)"><circle cx="50" cy="50" r="42" fill="none" stroke-width="10" style="stroke:var(--line)"/><circle cx="50" cy="50" r="42" fill="none" stroke-width="10" stroke-linecap="round" stroke-dasharray="${d} ${C}" style="stroke:${color}"/></svg><b>${val}</b></div><small>${label}</small></div>`}
@@ -361,7 +462,7 @@ function viewWeek(){
   const rows=wk.map(d=>{
     const p=planFor(d);
     const done=acts.filter(a=>a[0]===d&&a[2]!=="walk"&&a[2]!=="ride");
-    if(p){pk+=PKM[d]||0;if(/natation/i.test(p.t+" "+p.d1.join(" ")))ps++;if(/push|pull|legs|salle/i.test(p.t))pg++}
+    if(p){pk+=PKM[d]||0;if(/natation/i.test(p.t+" "+p.d1.join(" ")))ps++;if(/push|pull|legs|salle|full body/i.test(p.t))pg++}
     done.forEach(a=>{if(a[2]==="run")dk+=a[4];if(a[2]==="swim")ds++;if(a[2]==="gym")dg++});
     const av=S.avail[parse(d).getDay()];
     const missed=p&&d<TODAY&&!done.length&&S.ivl;
